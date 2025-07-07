@@ -79,12 +79,12 @@ namespace RecipeManagementApi.Models
         /// <summary>
         /// 創建日期
         /// </summary>
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// 最後更新日期
         /// </summary>
-        public DateTime LastUpdatedDate { get; set; } = DateTime.Now;
+        public DateTime LastUpdatedDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// 產品配方

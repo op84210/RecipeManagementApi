@@ -13,9 +13,9 @@ namespace RecipeManagementApi.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<RecipeDbContext>();
             
-            // 使用預設的 PostgreSQL 連接字串進行遷移
-            // 實際部署時會使用環境變數中的連接字串
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=recipemanagementdb;Username=postgres;Password=password");
+            // 設計時使用 PostgreSQL 提供者來生成正確的遷移
+            // 連線字串只是用於模型建構，不會實際連線
+            optionsBuilder.UseNpgsql("Host=dummy;Database=dummy;Username=dummy;Password=dummy");
             
             return new RecipeDbContext(optionsBuilder.Options);
         }

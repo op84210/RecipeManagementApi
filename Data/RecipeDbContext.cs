@@ -136,8 +136,8 @@ namespace RecipeManagementApi.Data
                     Supplier = "統一麵粉公司",
                     StockQuantity = 50000,
                     MinimumStock = 5000,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 },
                 new Material
                 {
@@ -150,8 +150,8 @@ namespace RecipeManagementApi.Data
                     Supplier = "台糖公司",
                     StockQuantity = 20000,
                     MinimumStock = 2000,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 },
                 new Material
                 {
@@ -164,8 +164,8 @@ namespace RecipeManagementApi.Data
                     Supplier = "大成食品",
                     StockQuantity = 500,
                     MinimumStock = 50,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 },
                 new Material
                 {
@@ -178,8 +178,8 @@ namespace RecipeManagementApi.Data
                     Supplier = "法國乳品進口商",
                     StockQuantity = 10000,
                     MinimumStock = 1000,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 },
                 new Material
                 {
@@ -192,8 +192,8 @@ namespace RecipeManagementApi.Data
                     Supplier = "台鹽公司",
                     StockQuantity = 5000,
                     MinimumStock = 500,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 }
             );
 
@@ -210,8 +210,8 @@ namespace RecipeManagementApi.Data
                     YieldUnit = "條",
                     EstimatedProductionTimeMinutes = 180,
                     StandardPrice = 45.0m,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 },
                 new Product
                 {
@@ -224,8 +224,8 @@ namespace RecipeManagementApi.Data
                     YieldUnit = "個",
                     EstimatedProductionTimeMinutes = 150,
                     StandardPrice = 60.0m,
-                    CreatedDate = DateTime.Now,
-                    LastUpdatedDate = DateTime.Now
+                    CreatedDate = DateTime.UtcNow,
+                    LastUpdatedDate = DateTime.UtcNow
                 }
             );
         }

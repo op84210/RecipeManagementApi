@@ -12,8 +12,8 @@ using RecipeManagementApi.Data;
 namespace RecipeManagementApi.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20250707072844_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250707073937_FixUtcTimestamps")]
+    partial class FixUtcTimestamps
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,10 +88,10 @@ namespace RecipeManagementApi.Migrations
                             Id = 1,
                             Category = 0,
                             CostPerUnit = 0.008m,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(4314),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7133),
                             Description = "蛋白質含量12%以上的麵粉",
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(4827),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7476),
                             MinimumStock = 5000m,
                             Name = "高筋麵粉",
                             StockQuantity = 50000m,
@@ -103,10 +103,10 @@ namespace RecipeManagementApi.Migrations
                             Id = 2,
                             Category = 0,
                             CostPerUnit = 0.005m,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5337),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7814),
                             Description = "細白砂糖",
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5337),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7815),
                             MinimumStock = 2000m,
                             Name = "砂糖",
                             StockQuantity = 20000m,
@@ -118,10 +118,10 @@ namespace RecipeManagementApi.Migrations
                             Id = 3,
                             Category = 0,
                             CostPerUnit = 8.0m,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5343),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7818),
                             Description = "新鮮雞蛋",
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5344),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7819),
                             MinimumStock = 50m,
                             Name = "雞蛋",
                             StockQuantity = 500m,
@@ -133,10 +133,10 @@ namespace RecipeManagementApi.Migrations
                             Id = 4,
                             Category = 0,
                             CostPerUnit = 0.02m,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5632),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7821),
                             Description = "法國進口無鹽奶油",
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5633),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7821),
                             MinimumStock = 1000m,
                             Name = "無鹽奶油",
                             StockQuantity = 10000m,
@@ -148,10 +148,10 @@ namespace RecipeManagementApi.Migrations
                             Id = 5,
                             Category = 0,
                             CostPerUnit = 0.002m,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5640),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7824),
                             Description = "精製食鹽",
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 98, DateTimeKind.Local).AddTicks(5640),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 918, DateTimeKind.Utc).AddTicks(7824),
                             MinimumStock = 500m,
                             Name = "鹽",
                             StockQuantity = 5000m,
@@ -222,11 +222,11 @@ namespace RecipeManagementApi.Migrations
                         {
                             Id = 1,
                             Category = 0,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 100, DateTimeKind.Local).AddTicks(4151),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 919, DateTimeKind.Utc).AddTicks(7887),
                             Description = "經典白土司麵包，口感鬆軟香甜",
                             EstimatedProductionTimeMinutes = 180,
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 100, DateTimeKind.Local).AddTicks(4748),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 919, DateTimeKind.Utc).AddTicks(8225),
                             Name = "白土司麵包",
                             ProductCode = "BREAD-001",
                             StandardPrice = 45.0m,
@@ -237,11 +237,11 @@ namespace RecipeManagementApi.Migrations
                         {
                             Id = 2,
                             Category = 0,
-                            CreatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 100, DateTimeKind.Local).AddTicks(5226),
+                            CreatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 919, DateTimeKind.Utc).AddTicks(8558),
                             Description = "香濃奶油小餐包，適合早餐",
                             EstimatedProductionTimeMinutes = 150,
                             IsActive = true,
-                            LastUpdatedDate = new DateTime(2025, 7, 7, 15, 28, 43, 100, DateTimeKind.Local).AddTicks(5227),
+                            LastUpdatedDate = new DateTime(2025, 7, 7, 7, 39, 36, 919, DateTimeKind.Utc).AddTicks(8559),
                             Name = "奶油小餐包",
                             ProductCode = "BREAD-002",
                             StandardPrice = 60.0m,
