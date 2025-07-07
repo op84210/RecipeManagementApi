@@ -23,26 +23,13 @@ if (string.IsNullOrEmpty(connectionString))
     connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 }
 
-Console.WriteLine($"🔍 環境變數檢查:");
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-Console.WriteLine($"   DATABASE_URL 存在: {databaseUrl != null}");
-Console.WriteLine($"   DATABASE_URL 長度: {databaseUrl?.Length ?? 0}");
-Console.WriteLine($"   DATABASE_URL 值: '{databaseUrl ?? "null"}'");
-Console.WriteLine($"   最終連接字串長度: {connectionString?.Length ?? 0}");
 if (!string.IsNullOrEmpty(connectionString))
 {
-    Console.WriteLine($"   連接字串前50字元: '{connectionString.Substring(0, Math.Min(50, connectionString.Length))}'");
-}
-
-if (!string.IsNullOrEmpty(connectionString))
-{
-    Console.WriteLine("🗄️  使用 PostgreSQL 資料庫儲存");
-    Console.WriteLine($"   連接目標: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+    Console.WriteLine("🗄️ 使用 PostgreSQL 資料庫儲存");
     
     // Railway PostgreSQL 格式轉換 (postgresql://user:pass@host:port/database 或 postgres://user:pass@host:port/database)
     if (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://"))
     {
-        Console.WriteLine("🔄 轉換 Railway PostgreSQL 連接格式...");
         try
         {
             var uri = new Uri(connectionString);
@@ -52,12 +39,10 @@ if (!string.IsNullOrEmpty(connectionString))
             var database = uri.AbsolutePath.Trim('/');
             
             connectionString = $"Host={uri.Host};Port={uri.Port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
-            Console.WriteLine($"   轉換後格式: Host={uri.Host};Port={uri.Port};Database={database};Username={username};...");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"   ❌ URI 解析失敗: {ex.Message}");
-            Console.WriteLine($"   原始連接字串: {connectionString}");
+            Console.WriteLine($"❌ PostgreSQL 連接字串解析失敗: {ex.Message}");
             throw;
         }
     }
@@ -69,7 +54,6 @@ if (!string.IsNullOrEmpty(connectionString))
 else
 {
     Console.WriteLine("🧠 使用記憶體儲存（開發模式）");
-    Console.WriteLine("   注意：資料在應用程式重啟後會消失");
     
     // 註冊 InMemory DbContext (開發/測試用)
     builder.Services.AddDbContext<RecipeDbContext>(options =>
@@ -127,21 +111,19 @@ using (var scope = app.Services.CreateScope())
     {
         try
         {
-            Console.WriteLine("🔄 開始資料庫遷移...");
+            Console.WriteLine("🔄 執行資料庫遷移...");
             await context.Database.EnsureCreatedAsync();
             Console.WriteLine("✅ 資料庫遷移完成");
         }
         catch (Exception ex)
         {
-            // 記錄詳細錯誤但不停止應用程式啟動
             Console.WriteLine($"❌ 資料庫遷移失敗: {ex.Message}");
-            Console.WriteLine($"詳細錯誤: {ex}");
-            Console.WriteLine("⚠️  將使用記憶體儲存模式");
+            Console.WriteLine("⚠️ 將使用記憶體儲存模式");
         }
     }
     else
     {
-        Console.WriteLine("ℹ️  使用記憶體資料庫，立即初始化");
+        Console.WriteLine("ℹ️ 初始化記憶體資料庫");
         context.Database.EnsureCreated();
     }
 }
