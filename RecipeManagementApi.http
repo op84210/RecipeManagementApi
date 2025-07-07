@@ -1,0 +1,204 @@
+@RecipeManagementApi_HostAddress = https://localhost:7120
+
+###
+# 健康檢查
+GET {{RecipeManagementApi_HostAddress}}/swagger
+
+###
+# 取得所有材料
+GET {{RecipeManagementApi_HostAddress}}/api/materials
+Accept: application/json
+
+###
+# 取得材料（帶篩選）
+GET {{RecipeManagementApi_HostAddress}}/api/materials?search=麵粉&category=Ingredient&page=1&pageSize=10
+Accept: application/json
+
+###
+# 根據 ID 取得材料
+GET {{RecipeManagementApi_HostAddress}}/api/materials/1
+Accept: application/json
+
+###
+# 建立新材料
+POST {{RecipeManagementApi_HostAddress}}/api/materials
+Content-Type: application/json
+
+{
+  "name": "高筋麵粉",
+  "description": "用於製作麵包的高筋麵粉",
+  "category": "Ingredient",
+  "unit": "公斤",
+  "costPerUnit": 45.50,
+  "supplier": "麵粉供應商"
+}
+
+###
+# 更新材料
+PUT {{RecipeManagementApi_HostAddress}}/api/materials/1
+Content-Type: application/json
+
+{
+  "name": "高筋麵粉（更新）",
+  "description": "優質高筋麵粉，適合製作麵包",
+  "category": "Ingredient",
+  "unit": "公斤",
+  "costPerUnit": 50.00,
+  "supplier": "優質麵粉供應商"
+}
+
+###
+# 刪除材料
+DELETE {{RecipeManagementApi_HostAddress}}/api/materials/1
+
+###
+# 取得所有產品
+GET {{RecipeManagementApi_HostAddress}}/api/products
+Accept: application/json
+
+###
+# 取得產品（帶篩選）
+GET {{RecipeManagementApi_HostAddress}}/api/products?search=麵包&category=Bakery&page=1&pageSize=10
+Accept: application/json
+
+###
+# 根據 ID 取得產品
+GET {{RecipeManagementApi_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+# 建立新產品
+POST {{RecipeManagementApi_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "白吐司",
+  "description": "經典白吐司麵包",
+  "category": "Bakery",
+  "unit": "條",
+  "standardPrice": 35.00
+}
+
+###
+# 更新產品
+PUT {{RecipeManagementApi_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "白吐司（加大版）",
+  "description": "加大版白吐司麵包，更豐富口感",
+  "category": "Bakery",
+  "unit": "條",
+  "standardPrice": 45.00
+}
+
+###
+# 取得產品的配方
+GET {{RecipeManagementApi_HostAddress}}/api/products/1/recipes
+Accept: application/json
+
+###
+# 刪除產品
+DELETE {{RecipeManagementApi_HostAddress}}/api/products/1
+
+###
+# 取得所有配方
+GET {{RecipeManagementApi_HostAddress}}/api/recipes
+Accept: application/json
+
+###
+# 取得配方（帶篩選）
+GET {{RecipeManagementApi_HostAddress}}/api/recipes?search=吐司&status=Active&productId=1&page=1&pageSize=10
+Accept: application/json
+
+###
+# 根據 ID 取得配方
+GET {{RecipeManagementApi_HostAddress}}/api/recipes/1
+Accept: application/json
+
+###
+# 建立新配方
+POST {{RecipeManagementApi_HostAddress}}/api/recipes
+Content-Type: application/json
+
+{
+  "name": "白吐司配方 v1.0",
+  "description": "經典白吐司製作配方",
+  "productId": 1,
+  "servingSize": 1,
+  "preparationTime": 180,
+  "instructions": "1. 混合乾料\n2. 加入濕料攪拌\n3. 發酵\n4. 整形\n5. 二次發酵\n6. 烘烤"
+}
+
+###
+# 更新配方
+PUT {{RecipeManagementApi_HostAddress}}/api/recipes/1
+Content-Type: application/json
+
+{
+  "name": "白吐司配方 v1.1",
+  "description": "改良版白吐司製作配方",
+  "servingSize": 1,
+  "preparationTime": 160,
+  "instructions": "1. 混合乾料\n2. 加入濕料攪拌成團\n3. 第一次發酵60分鐘\n4. 整形\n5. 二次發酵45分鐘\n6. 預熱烤箱至200度\n7. 烘烤35分鐘",
+  "status": "Active"
+}
+
+###
+# 設定為主要配方
+POST {{RecipeManagementApi_HostAddress}}/api/recipes/1/set-primary
+
+###
+# 取得配方項目
+GET {{RecipeManagementApi_HostAddress}}/api/recipes/1/items
+Accept: application/json
+
+###
+# 新增配方項目
+POST {{RecipeManagementApi_HostAddress}}/api/recipes/1/items
+Content-Type: application/json
+
+{
+  "materialId": 1,
+  "quantity": 500,
+  "type": "MainIngredient",
+  "notes": "高筋麵粉，過篩使用"
+}
+
+###
+# 更新配方項目
+PUT {{RecipeManagementApi_HostAddress}}/api/recipe-items/1
+Content-Type: application/json
+
+{
+  "quantity": 520,
+  "type": "MainIngredient",
+  "notes": "高筋麵粉，過篩使用，增加用量提升口感"
+}
+
+###
+# 計算配方成本
+GET {{RecipeManagementApi_HostAddress}}/api/recipes/1/cost
+Accept: application/json
+
+###
+# 更新配方成本
+POST {{RecipeManagementApi_HostAddress}}/api/recipes/1/update-cost
+
+###
+# 取得配方項目詳細資料
+GET {{RecipeManagementApi_HostAddress}}/api/recipe-items/1
+Accept: application/json
+
+###
+# 刪除配方項目
+DELETE {{RecipeManagementApi_HostAddress}}/api/recipe-items/1
+
+###
+# 刪除配方
+DELETE {{RecipeManagementApi_HostAddress}}/api/recipes/1eManagementApi_HostAddress = http://localhost:5130
+
+GET {{RecipeManagementApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
