@@ -4,14 +4,77 @@ using RecipeManagementApi.Data;
 using RecipeManagementApi.Services;
 using System.Reflection;
 
+// 配方管理 Web API 應用程式進入點
+// 提供完整的配方、材料、產品管理功能
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Railway PORT 支援 - 雲端部署時使用動態 PORT
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// 註冊 DbContext (使用 InMemory 資料庫)
-builder.Services.AddDbContext<RecipeDbContext>(options =>
-    options.UseInMemoryDatabase("RecipeManagementDb"));
+// 資料庫配置 - 智慧選擇 PostgreSQL 或 InMemory
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(connectionString))
+{
+    connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+}
+
+Console.WriteLine($"🔍 環境變數檢查:");
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+Console.WriteLine($"   DATABASE_URL 存在: {databaseUrl != null}");
+Console.WriteLine($"   DATABASE_URL 長度: {databaseUrl?.Length ?? 0}");
+Console.WriteLine($"   DATABASE_URL 值: '{databaseUrl ?? "null"}'");
+Console.WriteLine($"   最終連接字串長度: {connectionString?.Length ?? 0}");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine($"   連接字串前50字元: '{connectionString.Substring(0, Math.Min(50, connectionString.Length))}'");
+}
+
+if (!string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("🗄️  使用 PostgreSQL 資料庫儲存");
+    Console.WriteLine($"   連接目標: {connectionString.Substring(0, Math.Min(50, connectionString.Length))}...");
+    
+    // Railway PostgreSQL 格式轉換 (postgresql://user:pass@host:port/database 或 postgres://user:pass@host:port/database)
+    if (connectionString.StartsWith("postgresql://") || connectionString.StartsWith("postgres://"))
+    {
+        Console.WriteLine("🔄 轉換 Railway PostgreSQL 連接格式...");
+        try
+        {
+            var uri = new Uri(connectionString);
+            var userInfo = uri.UserInfo.Split(':');
+            var username = userInfo[0];
+            var password = userInfo.Length > 1 ? userInfo[1] : "";
+            var database = uri.AbsolutePath.Trim('/');
+            
+            connectionString = $"Host={uri.Host};Port={uri.Port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+            Console.WriteLine($"   轉換後格式: Host={uri.Host};Port={uri.Port};Database={database};Username={username};...");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"   ❌ URI 解析失敗: {ex.Message}");
+            Console.WriteLine($"   原始連接字串: {connectionString}");
+            throw;
+        }
+    }
+    
+    // 註冊 PostgreSQL DbContext
+    builder.Services.AddDbContext<RecipeDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
+else
+{
+    Console.WriteLine("🧠 使用記憶體儲存（開發模式）");
+    Console.WriteLine("   注意：資料在應用程式重啟後會消失");
+    
+    // 註冊 InMemory DbContext (開發/測試用)
+    builder.Services.AddDbContext<RecipeDbContext>(options =>
+        options.UseInMemoryDatabase("RecipeManagementDb"));
+}
 
 // 註冊服務
 builder.Services.AddScoped<IRecipeService, RecipeService>();
@@ -41,27 +104,110 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
+// 配置 CORS（跨域請求）
+// 允許前端應用程式呼叫此 API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
-// 確保資料庫已建立並初始化種子資料
+// 資料庫自動遷移（僅在有資料庫時）
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<RecipeDbContext>();
-    context.Database.EnsureCreated();
+    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DATABASE_URL")) || 
+        !string.IsNullOrEmpty(builder.Configuration.GetConnectionString("DefaultConnection")))
+    {
+        try
+        {
+            Console.WriteLine("🔄 開始資料庫遷移...");
+            await context.Database.EnsureCreatedAsync();
+            Console.WriteLine("✅ 資料庫遷移完成");
+        }
+        catch (Exception ex)
+        {
+            // 記錄詳細錯誤但不停止應用程式啟動
+            Console.WriteLine($"❌ 資料庫遷移失敗: {ex.Message}");
+            Console.WriteLine($"詳細錯誤: {ex}");
+            Console.WriteLine("⚠️  將使用記憶體儲存模式");
+        }
+    }
+    else
+    {
+        Console.WriteLine("ℹ️  使用記憶體資料庫，立即初始化");
+        context.Database.EnsureCreated();
+    }
 }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // 開發環境啟用 Swagger UI
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Recipe Management API v1");
-        c.RoutePrefix = string.Empty; // 讓 Swagger UI 在根路徑顯示
+        c.RoutePrefix = string.Empty; // 讓 Swagger UI 成為根頁面
+        c.DocumentTitle = "配方管理 API 文件";
+    });
+}
+else
+{
+    // 生產環境也啟用 Swagger（方便測試）
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Recipe Management API v1");
+        c.RoutePrefix = string.Empty;
+        c.DocumentTitle = "配方管理 API 文件";
     });
 }
 
-app.UseHttpsRedirection();
+// 健康檢查端點（Railway 部署需要）
+app.MapGet("/health", () => new { 
+    status = "healthy", 
+    timestamp = DateTime.UtcNow,
+    environment = app.Environment.EnvironmentName 
+});
+
+// 環境變數診斷端點（僅限開發/除錯用）
+app.MapGet("/debug/env", () => 
+{
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "not set";
+    var railwayEnvironment = Environment.GetEnvironmentVariable("RAILWAY_ENVIRONMENT") ?? "not set";
+    
+    return new 
+    { 
+        timestamp = DateTime.UtcNow,
+        environment = app.Environment.EnvironmentName,
+        databaseUrl = new 
+        {
+            exists = databaseUrl != null,
+            length = databaseUrl?.Length ?? 0,
+            preview = databaseUrl?.Length > 0 ? databaseUrl.Substring(0, Math.Min(30, databaseUrl.Length)) + "..." : "empty"
+        },
+        port,
+        railwayEnvironment,
+        message = "檢查 Railway 控制台中的 DATABASE_URL 環境變數設定"
+    };
+});
+
+// 根路徑重導向到 Swagger
+app.MapGet("/", () => Results.Redirect("/swagger"));
+
+// 取消 HTTPS 重導向（Railway 會在 Proxy 層處理 HTTPS）
+// app.UseHttpsRedirection();
+
+// 啟用 CORS
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

@@ -1,0 +1,120 @@
+### Railway PostgreSQL 部署測試 - 配方管理 API
+
+# 1. 檢查環境變數診斷
+GET https://your-app-name.up.railway.app/debug/env
+
+###
+
+# 2. 檢查 API 健康狀態
+GET https://your-app-name.up.railway.app/health
+
+###
+
+# 3. 檢查 Swagger 文檔
+GET https://your-app-name.up.railway.app/
+
+###
+
+# 4. 獲取所有材料（測試資料庫連線）
+GET https://your-app-name.up.railway.app/api/materials
+
+###
+
+# 5. 新增一個測試材料（驗證資料持久化）
+POST https://your-app-name.up.railway.app/api/materials
+Content-Type: application/json
+
+{
+  "name": "測試材料",
+  "description": "Railway PostgreSQL 測試用材料",
+  "category": "Ingredient",
+  "unit": "公斤",
+  "costPerUnit": 25.50,
+  "supplier": "測試供應商"
+}
+
+###
+
+# 6. 再次獲取所有材料（確認新資料已保存）
+GET https://your-app-name.up.railway.app/api/materials
+
+###
+
+# 7. 新增測試產品
+POST https://your-app-name.up.railway.app/api/products
+Content-Type: application/json
+
+{
+  "name": "測試產品",
+  "description": "Railway PostgreSQL 測試用產品",
+  "category": "Bakery",
+  "unit": "個",
+  "standardPrice": 15.00
+}
+
+###
+
+# 8. 獲取所有產品
+GET https://your-app-name.up.railway.app/api/products
+
+###
+
+# 9. 新增測試配方
+POST https://your-app-name.up.railway.app/api/recipes
+Content-Type: application/json
+
+{
+  "name": "測試配方",
+  "description": "Railway PostgreSQL 測試用配方",
+  "productId": 1,
+  "servingSize": 1,
+  "preparationTime": 30,
+  "instructions": "1. 準備材料\n2. 混合\n3. 完成"
+}
+
+###
+
+# 10. 獲取所有配方
+GET https://your-app-name.up.railway.app/api/recipes
+
+###
+
+# 11. 批量材料測試
+POST https://your-app-name.up.railway.app/api/materials
+Content-Type: application/json
+
+{
+  "name": "高筋麵粉",
+  "description": "用於製作麵包的高筋麵粉",
+  "category": "Ingredient",
+  "unit": "公斤",
+  "costPerUnit": 45.50,
+  "supplier": "麵粉專業供應商"
+}
+
+###
+
+POST https://your-app-name.up.railway.app/api/materials
+Content-Type: application/json
+
+{
+  "name": "奶油",
+  "description": "無鹽奶油",
+  "category": "Ingredient",
+  "unit": "公斤", 
+  "costPerUnit": 180.00,
+  "supplier": "乳製品供應商"
+}
+
+###
+
+# 12. 最終驗證 - 獲取所有資料
+GET https://your-app-name.up.railway.app/api/materials
+
+###
+
+GET https://your-app-name.up.railway.app/api/products
+
+###
+
+GET https://your-app-name.up.railway.app/api/recipes
